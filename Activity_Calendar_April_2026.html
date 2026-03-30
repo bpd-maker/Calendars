@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Activity Calendar – April 2026 | Blue Ridge QSC Management</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --mcred: #DA291C;
+    --mcyellow: #FFC72C;
+    --mcdark: #27251F;
+    --mcgreen: #264F36;
+    --sky: #00A5CF;
+    --purple: #6A0DAD;
+    --orange: #FF6B35;
+    --lime: #76B900;
+    --pink: #FF4D8D;
+    --teal: #00897B;
+    --lavender: #E8DEFF;
+    --cream: #FFFBF0;
+    --card-radius: 10px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: var(--mcdark);
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  /* ── WRAPPER ── */
+  .page {
+    width: 1400px;
+    margin: 0 auto;
+    background: var(--cream);
+    min-height: 100vh;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    background: var(--mcred);
+    padding: 0;
+    position: relative;
+    overflow: hidden;
+  }
+  .header::before {
+    content:'';
+    position:absolute; inset:0;
+    background: repeating-linear-gradient(45deg, transparent, transparent 18px, rgba(255,255,255,.06) 18px, rgba(255,255,255,.06) 20px);
+  }
+  .header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 36px;
+    position: relative;
+    z-index: 1;
+  }
+  .header-left { display:flex; align-items:center; gap:18px; }
+  .month-badge {
+    background: var(--mcyellow);
+    border-radius: 14px;
+    padding: 8px 18px;
+    text-align: center;
+    box-shadow: 0 4px 14px rgba(0,0,0,.25);
+  }
+  .month-badge .month-label {
+    font-family:'Fredoka One', cursive;
+    font-size: 13px;
+    letter-spacing:3px;
+    color: var(--mcred);
+    display:block;
+    text-transform:uppercase;
+  }
+  .month-badge .year-label {
+    font-family:'Fredoka One', cursive;
+    font-size: 36px;
+    color: var(--mcdark);
+    line-height:1;
+  }
+  .header-title { color:#fff; }
+  .header-title h1 {
+    font-family:'Fredoka One', cursive;
+    font-size: 52px;
+    letter-spacing: 1px;
+    line-height: 1;
+    text-shadow: 3px 3px 0 rgba(0,0,0,.2);
+  }
+  .header-title h1 span { color: var(--mcyellow); }
+  .header-title p {
+    font-size: 13px;
+    opacity:.85;
+    letter-spacing: 1.5px;
+    margin-top: 2px;
+  }
+  .header-right { text-align:right; }
+  .company-badge {
+    background: rgba(255,255,255,.15);
+    border: 2px solid rgba(255,255,255,.3);
+    border-radius: 12px;
+    padding: 10px 18px;
+    color:#fff;
+  }
+  .company-badge strong {
+    font-family:'Fredoka One', cursive;
+    font-size:18px;
+    display:block;
+    color:var(--mcyellow);
+  }
+  .company-badge span { font-size:11px; opacity:.8; letter-spacing:.5px; }
+
+  /* focus ribbon */
+  .focus-ribbon {
+    background: var(--mcyellow);
+    text-align: center;
+    padding: 8px;
+    font-family: 'Fredoka One', cursive;
+    font-size: 16px;
+    letter-spacing: 2px;
+    color: var(--mcdark);
+  }
+  .focus-ribbon em { color: var(--mcred); font-style:normal; }
+
+  /* ── LEGEND ── */
+  .legend {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    padding: 12px 28px;
+    background: #fff;
+    border-bottom: 3px solid var(--mcyellow);
+    align-items: center;
+  }
+  .legend-title {
+    font-weight: 900;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--mcdark);
+    margin-right: 4px;
+  }
+  .leg {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: 700;
+  }
+  .leg-dot {
+    width: 12px; height: 12px;
+    border-radius: 3px;
+    flex-shrink: 0;
+  }
+
+  /* ── GRID ── */
+  .cal-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 0;
+    padding: 0 16px 16px;
+    background: var(--cream);
+  }
+
+  /* Day headers */
+  .day-header {
+    text-align: center;
+    padding: 10px 4px;
+    font-family: 'Fredoka One', cursive;
+    font-size: 16px;
+    letter-spacing: 1px;
+    border-bottom: 3px solid var(--mcdark);
+    margin: 0 4px;
+  }
+  .day-header.sun { color: var(--mcred); }
+  .day-header.sat { color: var(--mcred); }
+  .day-header.weekday { color: var(--mcdark); }
+
+  /* Cell */
+  .cell {
+    border: 2px solid #e2d8c8;
+    border-radius: var(--card-radius);
+    margin: 4px;
+    padding: 0;
+    min-height: 155px;
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transition: transform .15s;
+    position: relative;
+  }
+  .cell:hover { transform: scale(1.01); z-index: 2; box-shadow: 0 6px 20px rgba(0,0,0,.15); }
+  .cell.empty { background: rgba(0,0,0,.03); border-color: #ddd; }
+  .cell.sunday { border-top: 4px solid var(--mcred); }
+  .cell.saturday { border-top: 4px solid var(--mcred); }
+  .cell.today { border: 3px solid var(--mcyellow); box-shadow: 0 0 0 3px rgba(255,199,44,.3); }
+
+  .cell-date {
+    font-family: 'Fredoka One', cursive;
+    font-size: 22px;
+    line-height: 1;
+    padding: 6px 8px 2px;
+    color: var(--mcdark);
+  }
+  .cell.sunday .cell-date, .cell.saturday .cell-date { color: var(--mcred); }
+  .cell.overflow-month .cell-date { color: #aaa; }
+
+  .events {
+    flex: 1;
+    padding: 2px 5px 5px;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    overflow: hidden;
+  }
+
+  /* Event pill */
+  .ev {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 5px;
+    line-height: 1.35;
+    display: flex;
+    align-items: flex-start;
+    gap: 3px;
+  }
+  .ev-icon { flex-shrink:0; font-size:10px; }
+
+  /* Color classes */
+  .ev.audit    { background:#FFF3CD; color:#856404; border-left:3px solid #FFC107; }
+  .ev.crew     { background:#D1ECF1; color:#0C5460; border-left:3px solid var(--sky); }
+  .ev.pm       { background:#E8F5E9; color:#1B5E20; border-left:3px solid var(--lime); }
+  .ev.orient   { background:#E3F2FD; color:#0D47A1; border-left:3px solid #2196F3; }
+  .ev.sup      { background:#FCE4EC; color:#880E4F; border-left:3px solid var(--pink); }
+  .ev.fun      { background:#FFF8E1; color:#E65100; border-left:3px solid var(--mcyellow); }
+  .ev.training { background:#F3E5F5; color:#4A148C; border-left:3px solid var(--purple); }
+  .ev.mgmt     { background:#E8EAF6; color:#1A237E; border-left:3px solid #3F51B5; }
+  .ev.ops      { background:#E0F7FA; color:#006064; border-left:3px solid var(--teal); }
+  .ev.hot      { background:var(--mcred); color:#fff; border-left:3px solid #900; }
+  .ev.launch   { background:var(--mcyellow); color:var(--mcdark); border-left:3px solid #d4a200; }
+  .ev.bootcamp { background:var(--mcdark); color:var(--mcyellow); border-radius:4px; font-size:9.5px; }
+  .ev.grimace  { background:#6A0DAD; color:#fff; border-radius:4px; }
+  .ev.sugar    { background:linear-gradient(90deg,#FF4D8D,#FF6B35); color:#fff; border-radius:5px; font-weight:900; }
+  .ev.eom      { background:#E53935; color:#fff; border-left:3px solid #b71c1c; }
+  .ev.supersat { background:linear-gradient(90deg, var(--mcred), var(--mcyellow)); color:#fff; border-radius:5px; font-weight:900; }
+
+  /* Spanning banner rows */
+  .span-row {
+    grid-column: span 7;
+    padding: 0 4px 4px;
+  }
+  .span-banner {
+    border-radius: 8px;
+    padding: 5px 14px;
+    font-size: 12px;
+    font-weight: 900;
+    letter-spacing: .5px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .span-banner.bootcamp { background: var(--mcdark); color: var(--mcyellow); }
+  .span-banner.grimace  { background: #6A0DAD; color: #fff; }
+
+  /* Week grouping via CSS grid */
+  .week-group {
+    display: contents;
+  }
+
+  /* Footer */
+  .footer {
+    background: var(--mcdark);
+    color: rgba(255,255,255,.6);
+    text-align: center;
+    padding: 14px;
+    font-size: 11px;
+    letter-spacing: 1px;
+  }
+  .footer strong { color: var(--mcyellow); }
+
+  /* print */
+  @media print {
+    body { background:#fff; }
+    .page { width:100%; }
+    .cell:hover { transform: none; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- ── HEADER ── -->
+  <div class="header">
+    <div class="header-inner">
+      <div class="header-left">
+        <div class="month-badge">
+          <span class="month-label">April</span>
+          <span class="year-label">2026</span>
+        </div>
+        <div class="header-title">
+          <h1>Activity <span>Calendar</span></h1>
+          <p>🍟 QSC MANAGEMENT, INC. &nbsp;|&nbsp; MOUNT AIRY PARTNERS, INC. &nbsp;|&nbsp; BLUE RIDGE</p>
+        </div>
+      </div>
+      <div class="header-right">
+        <div class="company-badge">
+          <strong>🏔️ Blue Ridge Team</strong>
+          <span>12 Restaurants Strong</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="focus-ribbon">
+    ⭐ OUR CORE FOCUS &nbsp;—&nbsp; <em>"Providing an Impressive Fast Food Experience"</em> &nbsp;⭐
+  </div>
+
+  <!-- ── LEGEND ── -->
+  <div class="legend">
+    <span class="legend-title">Key:</span>
+    <div class="leg"><div class="leg-dot" style="background:#FFC107"></div>Food Cost / Audit</div>
+    <div class="leg"><div class="leg-dot" style="background:var(--sky)"></div>Crew Schedules</div>
+    <div class="leg"><div class="leg-dot" style="background:var(--lime)"></div>PM Calendar</div>
+    <div class="leg"><div class="leg-dot" style="background:#2196F3"></div>Orientation</div>
+    <div class="leg"><div class="leg-dot" style="background:var(--pink)"></div>Supervisor</div>
+    <div class="leg"><div class="leg-dot" style="background:#FF6B35"></div>Fun &amp; Recognition</div>
+    <div class="leg"><div class="leg-dot" style="background:var(--purple)"></div>Training</div>
+    <div class="leg"><div class="leg-dot" style="background:#3F51B5"></div>Management</div>
+    <div class="leg"><div class="leg-dot" style="background:var(--teal)"></div>Operations</div>
+    <div class="leg"><div class="leg-dot" style="background:var(--mcred)"></div>Urgent / Deadline</div>
+    <div class="leg"><div class="leg-dot" style="background:var(--mcyellow)"></div>Launch / Promo</div>
+    <div class="leg"><div class="leg-dot" style="background:var(--mcdark)"></div>Boot Camp / Grimace</div>
+  </div>
+
+  <!-- ── CALENDAR GRID ── -->
+  <div class="cal-grid">
+
+    <!-- Day headers -->
+    <div class="day-header sun">☀️ Sunday</div>
+    <div class="day-header weekday">Monday</div>
+    <div class="day-header weekday">Tuesday</div>
+    <div class="day-header weekday">Wednesday</div>
+    <div class="day-header weekday">Thursday</div>
+    <div class="day-header weekday">🎉 Friday</div>
+    <div class="day-header sat">Saturday</div>
+
+    <!-- ════ WEEK 1: Mar 29 – Apr 4 ════ -->
+    <!-- Sun Mar 29 -->
+    <div class="cell sunday overflow-month">
+      <div class="cell-date">29</div>
+      <div class="events">
+        <div class="ev pm"><span class="ev-icon">🧊</span>PM Calendar – Ice Maker Clean</div>
+      </div>
+    </div>
+    <!-- Mon Mar 30 -->
+    <div class="cell overflow-month">
+      <div class="cell-date">30</div>
+      <div class="events">
+        <div class="ev audit"><span class="ev-icon">💰</span>Food Cost Audit by 10 am</div>
+        <div class="ev orient"><span class="ev-icon">👋</span>Orientation 5 pm</div>
+        <div class="ev fun"><span class="ev-icon">🧁</span>Muffin National Day</div>
+        <div class="ev mgmt"><span class="ev-icon">🏬</span>Store Manager Meetings</div>
+      </div>
+    </div>
+    <!-- Tue Mar 31 -->
+    <div class="cell overflow-month">
+      <div class="cell-date">31</div>
+      <div class="events">
+        <div class="ev crew"><span class="ev-icon">📋</span>Crew Schedules 4/19</div>
+      </div>
+    </div>
+    <!-- Wed Apr 1 -->
+    <div class="cell">
+      <div class="cell-date">1</div>
+      <div class="events">
+        <div class="ev sugar">🍦 ICE CREAM DAY! ...Sugar!</div>
+      </div>
+    </div>
+    <!-- Thu Apr 2 -->
+    <div class="cell">
+      <div class="cell-date">2</div>
+      <div class="events">
+        <div class="ev sup"><span class="ev-icon">📍</span>Sup. Wknd Positioning Post</div>
+        <div class="ev orient"><span class="ev-icon">👋</span>Orientation 10 am &amp; 5 pm</div>
+        <div class="ev eom"><span class="ev-icon">⚠️</span>EOM Turn In – Sups</div>
+      </div>
+    </div>
+    <!-- Fri Apr 3 -->
+    <div class="cell">
+      <div class="cell-date">3</div>
+      <div class="events">
+        <div class="ev crew"><span class="ev-icon">📋</span>Post Crew Schedules 4/12</div>
+        <div class="ev sugar">🍦 Ice Cream Day! Sugar!</div>
+        <div class="ev fun"><span class="ev-icon">⚡</span>Fast Friday Challenge</div>
+      </div>
+    </div>
+    <!-- Sat Apr 4 -->
+    <div class="cell saturday">
+      <div class="cell-date">4</div>
+      <div class="events">
+        <div class="ev fun"><span class="ev-icon">🐰</span>Easter Bunny – Mt Airy Stores</div>
+      </div>
+    </div>
+
+    <!-- ════ WEEK 2: Apr 5 – Apr 11 ════ -->
+    <!-- Sun Apr 5 -->
+    <div class="cell sunday">
+      <div class="cell-date">5</div>
+      <div class="events">
+        <div class="ev pm"><span class="ev-icon">☕</span>PM Calendar – Creamer / McCafe</div>
+        <div class="ev fun"><span class="ev-icon">🥤</span>Snack fans, roll out!</div>
+      </div>
+    </div>
+    <!-- Mon Apr 6 -->
+    <div class="cell">
+      <div class="cell-date">6</div>
+      <div class="events">
+        <div class="ev sup"><span class="ev-icon">🤝</span>Supervisor Mtg – In Person</div>
+        <div class="ev audit"><span class="ev-icon">💰</span>Food Cost Audit by 10 am</div>
+        <div class="ev orient"><span class="ev-icon">👋</span>Orientation 5 pm</div>
+      </div>
+    </div>
+    <!-- Tue Apr 7 -->
+    <div class="cell">
+      <div class="cell-date">7</div>
+      <div class="events">
+        <div class="ev crew"><span class="ev-icon">📋</span>Crew Schedules 4/26</div>
+        <div class="ev mgmt"><span class="ev-icon">📞</span>Shift Manager Call 4:00 pm</div>
+      </div>
+    </div>
+    <!-- Wed Apr 8 -->
+    <div class="cell">
+      <div class="cell-date">8</div>
+      <div class="events">
+        <div class="ev pm"><span class="ev-icon">🚶</span>PM Calendar – Walk-in Cooler</div>
+        <div class="ev ops"><span class="ev-icon">👥</span>30-Day People Follow Up</div>
+        <div class="ev training"><span class="ev-icon">🎓</span>NABIT Beverage Webcast</div>
+        <div class="ev hot"><span class="ev-icon">📍</span>RGR Lambsburg</div>
+      </div>
+    </div>
+    <!-- Thu Apr 9 -->
+    <div class="cell">
+      <div class="cell-date">9</div>
+      <div class="events">
+        <div class="ev sup"><span class="ev-icon">📍</span>Sup. Wknd Positioning Post</div>
+        <div class="ev orient"><span class="ev-icon">👋</span>Orientation 10 am &amp; 5 pm</div>
+      </div>
+    </div>
+    <!-- Fri Apr 10 -->
+    <div class="cell">
+      <div class="cell-date">10</div>
+      <div class="events">
+        <div class="ev crew"><span class="ev-icon">📋</span>Post Crew Schedules 4/19</div>
+        <div class="ev fun"><span class="ev-icon">🎉</span>Digital Friday Party</div>
+        <div class="ev ops"><span class="ev-icon">📅</span>Activity Calendar Release</div>
+      </div>
+    </div>
+    <!-- Sat Apr 11 -->
+    <div class="cell saturday">
+      <div class="cell-date">11</div>
+      <div class="events">
+        <div class="ev fun"><span class="ev-icon">💵</span>Bonus Day!</div>
+      </div>
+    </div>
+
+    <!-- Boot Camp banner for wk 2 -->
+    <div class="span-row">
+      <div class="span-banner bootcamp">🥾 BOOT CAMP — University (Madison, Rural Hall, Mayodan) &nbsp;|&nbsp; Full week</div>
+    </div>
+
+    <!-- ════ WEEK 3: Apr 12 – Apr 18 ════ -->
+    <!-- Sun Apr 12 -->
+    <div class="cell sunday">
+      <div class="cell-date">12</div>
+      <div class="events">
+        <div class="ev pm"><span class="ev-icon">🔋</span>PM Calendar – ABS</div>
+        <div class="ev mgmt"><span class="ev-icon">📊</span>Manager Schedule Sup Review</div>
+        <div class="ev fun"><span class="ev-icon">🤝</span>BE A TEAM</div>
+      </div>
+    </div>
+    <!-- Mon Apr 13 -->
+    <div class="cell">
+      <div class="cell-date">13</div>
+      <div class="events">
+        <div class="ev audit"><span class="ev-icon">💰</span>Food Cost Audit by 10 am</div>
+        <div class="ev ops"><span class="ev-icon">📦</span>Inventory Food/Paper</div>
+        <div class="ev hot"><span class="ev-icon">📅</span>Monthly Schedule – Skills / Availability</div>
+      </div>
+    </div>
+    <!-- Tue Apr 14 -->
+    <div class="cell">
+      <div class="cell-date">14</div>
+      <div class="events">
+        <div class="ev crew"><span class="ev-icon">📋</span>Crew Schedules 5/3</div>
+      </div>
+    </div>
+    <!-- Wed Apr 15 -->
+    <div class="cell">
+      <div class="cell-date">15</div>
+      <div class="events">
+        <div class="ev ops"><span class="ev-icon">❄️</span>HVAC Clean – Filter/Drain</div>
+        <div class="ev mgmt"><span class="ev-icon">📌</span>Manager Schedule Posted</div>
+        <div class="ev training"><span class="ev-icon">📊</span>PBS-Risk Survey Results</div>
+        <div class="ev training"><span class="ev-icon">🎓</span>Taylor Class – Rockford</div>
+      </div>
+    </div>
+    <!-- Thu Apr 16 -->
+    <div class="cell">
+      <div class="cell-date">16</div>
+      <div class="events">
+        <div class="ev sup"><span class="ev-icon">📍</span>Sup. Wknd Positioning Post</div>
+        <div class="ev orient"><span class="ev-icon">👋</span>Orientation 10 am &amp; 5 pm</div>
+      </div>
+    </div>
+    <!-- Fri Apr 17 -->
+    <div class="cell">
+      <div class="cell-date">17</div>
+      <div class="events">
+        <div class="ev crew"><span class="ev-icon">📋</span>Post Crew Schedules 4/26</div>
+        <div class="ev sugar">🍬 Candy Day! Sugar!</div>
+      </div>
+    </div>
+    <!-- Sat Apr 18 -->
+    <div class="cell saturday">
+      <div class="cell-date">18</div>
+      <div class="events">
+        <div class="ev supersat">⭐ SUPER SATURDAY ⭐</div>
+        <div class="ev fun"><span class="ev-icon">✅</span>BE TRUSTWORTHY</div>
+      </div>
+    </div>
+
+    <!-- Boot Camp + Grimace banners for wk 3 -->
+    <div class="span-row">
+      <div class="span-banner bootcamp" style="margin-bottom:4px">🥾 BOOT CAMP — Jonesville (Pilot, Lambsburg, Dobson)</div>
+      <div class="span-banner grimace">🟣 GRIMACE TOUR</div>
+    </div>
+
+    <!-- ════ WEEK 4: Apr 19 – Apr 25 ════ -->
+    <!-- Sun Apr 19 -->
+    <div class="cell sunday">
+      <div class="cell-date">19</div>
+      <div class="events">
+        <div class="ev pm"><span class="ev-icon">🧊</span>PM Calendar – Freezer</div>
+        <div class="ev ops"><span class="ev-icon">🍀</span>Shamrock Shake Ends</div>
+      </div>
+    </div>
+    <!-- Mon Apr 20 -->
+    <div class="cell">
+      <div class="cell-date">20</div>
+      <div class="events">
+        <div class="ev sup"><span class="ev-icon">🏫</span>Supervisor Mtg – University</div>
+        <div class="ev audit"><span class="ev-icon">💰</span>Food Cost Audit by 10 am</div>
+        <div class="ev mgmt"><span class="ev-icon">📈</span>May QCR Projections</div>
+        <div class="ev eom"><span class="ev-icon">🍔</span>Food Safety EOM</div>
+      </div>
+    </div>
+    <!-- Tue Apr 21 -->
+    <div class="cell">
+      <div class="cell-date">21</div>
+      <div class="events">
+        <div class="ev crew"><span class="ev-icon">📋</span>Crew Schedules 5/10</div>
+        <div class="ev ops"><span class="ev-icon">💻</span>Technology Audit – Brian</div>
+        <div class="ev launch"><span class="ev-icon">🚀</span>McValue 2.0 Launch!</div>
+      </div>
+    </div>
+    <!-- Wed Apr 22 -->
+    <div class="cell">
+      <div class="cell-date">22</div>
+      <div class="events">
+        <div class="ev pm"><span class="ev-icon">🍊</span>PM Calendar – OJ</div>
+        <div class="ev eom"><span class="ev-icon">💼</span>Collect EOM – Liz</div>
+        <div class="ev hot"><span class="ev-icon">📍</span>RGR University</div>
+        <div class="ev fun"><span class="ev-icon">🎁</span>Employee Benefits</div>
+      </div>
+    </div>
+    <!-- Thu Apr 23 -->
+    <div class="cell">
+      <div class="cell-date">23</div>
+      <div class="events">
+        <div class="ev sup"><span class="ev-icon">📍</span>Sup. Wknd Positioning Post</div>
+        <div class="ev orient"><span class="ev-icon">👋</span>Orientation 10 am &amp; 5 pm</div>
+        <div class="ev mgmt"><span class="ev-icon">🏆</span>GM Meeting</div>
+      </div>
+    </div>
+    <!-- Fri Apr 24 -->
+    <div class="cell">
+      <div class="cell-date">24</div>
+      <div class="events">
+        <div class="ev crew"><span class="ev-icon">📋</span>Post Crew Schedules 5/3</div>
+        <div class="ev sugar">🍬 Candy Day! Sugar!</div>
+      </div>
+    </div>
+    <!-- Sat Apr 25 -->
+    <div class="cell saturday">
+      <div class="cell-date">25</div>
+      <div class="events">
+        <div class="ev fun"><span class="ev-icon">🌟</span>BE EXCELLENT</div>
+      </div>
+    </div>
+
+    <!-- ════ WEEK 5: Apr 26 – May 2 ════ -->
+    <!-- Sun Apr 26 -->
+    <div class="cell sunday">
+      <div class="cell-date">26</div>
+      <div class="events">
+        <div class="ev pm"><span class="ev-icon">🧊</span>PM Calendar – Ice Maker Clean</div>
+      </div>
+    </div>
+    <!-- Mon Apr 27 -->
+    <div class="cell">
+      <div class="cell-date">27</div>
+      <div class="events">
+        <div class="ev ops"><span class="ev-icon">📞</span>Send Call Out Sheet</div>
+        <div class="ev orient"><span class="ev-icon">👋</span>Orientation 5 pm</div>
+        <div class="ev launch"><span class="ev-icon">🥤</span>Beverages Soft Sale</div>
+      </div>
+    </div>
+    <!-- Tue Apr 28 -->
+    <div class="cell">
+      <div class="cell-date">28</div>
+      <div class="events">
+        <div class="ev crew"><span class="ev-icon">📋</span>Crew Schedules 5/17</div>
+        <div class="ev mgmt"><span class="ev-icon">🏬</span>Store Manager Meetings</div>
+        <div class="ev hot"><span class="ev-icon">📦</span>Full Inventory</div>
+      </div>
+    </div>
+    <!-- Wed Apr 29 -->
+    <div class="cell">
+      <div class="cell-date">29</div>
+      <div class="events">
+        <div class="ev pm"><span class="ev-icon">☕</span>PM Calendar – Creamer/McCafe</div>
+        <div class="ev ops"><span class="ev-icon">🚫</span>No Inventory</div>
+        <div class="ev training"><span class="ev-icon">🛢️</span>Oil Class – US 52</div>
+      </div>
+    </div>
+    <!-- Thu Apr 30 -->
+    <div class="cell">
+      <div class="cell-date">30</div>
+      <div class="events">
+        <div class="ev sup"><span class="ev-icon">📍</span>Sup. Wknd Positioning Post</div>
+        <div class="ev ops"><span class="ev-icon">🚫</span>No Inventory</div>
+      </div>
+    </div>
+    <!-- Fri May 1 -->
+    <div class="cell overflow-month">
+      <div class="cell-date">1</div>
+      <div class="events">
+        <div class="ev crew"><span class="ev-icon">📋</span>Post Crew Schedules 5/10</div>
+        <div class="ev sugar">🍦 Ice Cream Day! Sugar!</div>
+      </div>
+    </div>
+    <!-- Sat May 2 -->
+    <div class="cell saturday overflow-month">
+      <div class="cell-date">2</div>
+      <div class="events">
+        <div class="ev supersat">⭐ SUPER SATURDAY ⭐</div>
+        <div class="ev hot"><span class="ev-icon">🎓</span>RGR University</div>
+      </div>
+    </div>
+
+    <!-- Boot Camp + Grimace banners for wk 5 -->
+    <div class="span-row">
+      <div class="span-banner bootcamp" style="margin-bottom:4px">🥾 BOOT CAMP — Hwy 52 (Elkin, Rockford, Renfro)</div>
+      <div class="span-banner grimace">🟣 GRIMACE TOUR</div>
+    </div>
+
+  </div><!-- /cal-grid -->
+
+  <!-- ── FOOTER ── -->
+  <div class="footer">
+    <strong>Blue Ridge — QSC Management, Inc. &amp; Mount Airy Partners, Inc.</strong> &nbsp;|&nbsp; 12 McDonald's Restaurants &nbsp;|&nbsp; April 2026
+  </div>
+
+</div><!-- /page -->
+</body>
+</html>
